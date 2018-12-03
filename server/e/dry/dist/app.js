@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require("express");
+var path_1 = require("path");
+var emit_1 = require("./emit");
+var app = express();
+exports.app = app;
+app.use('/node_modules', express.static(path_1.join(__dirname, '..', '..', '..', '..', 'node_modules')));
+app.use(express.static(__dirname));
+app.use('/emit', emit_1.emitRoute);

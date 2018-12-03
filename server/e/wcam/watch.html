@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Watch</title>
+	<script type="text/javascript" src='/socket.io/socket.io.js'></script>
+</head>
+<body>
+	<img id="watch">
+	<div id="log" style="max-width: 90vh"></div>
+	<script type="text/javascript">
+		function _(id) {
+			return document.getElementById(id)
+		}
+		let watch = _('watch')
+		let log = _('log')
+		let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia
+		let server = io()
+
+		function cam(stream){
+			let media = getUserMedia({
+				video: true,
+				audio: true
+			}, function(_stream){
+
+			}, function(err){
+
+			})
+		}
+		function stream(video, _ctx) {
+			_ctx.drawImage(video,0,0,_ctx.width,_ctx.height)
+		}
+		server.on('stream', function(image) {
+			log.innerHTML = watch.src = image
+		})
+	</script>
+</body>
+</html>

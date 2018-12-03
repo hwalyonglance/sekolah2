@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>io e</title>
+	<script type="text/javascript" src='/node_modules/socket.io-client/dist/socket.io.js'></script>
+</head>
+<body>
+	<script type="text/javascript">
+		console.log(io)
+		const server = io()
+		server.on('emitted from server', () => {
+			console.log('emitted from server')
+		})
+	</script>
+</body>
+</html>

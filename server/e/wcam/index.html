@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LIVE</title>
+	<script type="text/javascript" src='/socket.io/socket.io.js'></script>
+</head>
+<body>
+	<video id="watch" autoplay style="width: 50vw; height: 50vh;"></video>
+	<canvas id="kertas" style="border: 1px solid red"></canvas>
+	<script type="text/javascript">
+		function _(id) {
+			return document.getElementById(id)
+		}
+		let watch = _('watch')
+		let kertas = _('kertas')
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msgGetUserMedia
+		let ctx = kertas.getContext('2d')
+		ctx.height = kertas.height = 800
+		ctx.width = kertas.width = 500
+		let server = io()
+
+		server.on('connect', (a) => {
+			console.log('sio ', a)
+		})
+		function live(video, _ctx) {
+			_ctx.drawImage(video,0,0,_ctx.width,_ctx.height)
+			server.emit('stream', kertas.toDataURL('image/webp') )
+		}
+		function cam(){
+			let media = navigator.mediaDevices.getUserMedia({
+				video: {
+					mandatory: {
+						chromeMediaSource: 'desktop',
+						maxWidth: screen.availWidth,
+						maxHeight: screen.availHeight,
+						minWidth: 600,
+			            minHeight: 300
+					}
+				}
+			}, function(_stream){
+				alert('permission granted')
+				watch.src = window.URL.createObjectURL(_stream)
+			}, function(err){
+				alert('something went wrong')
+				console.log(err)
+			})
+			setInterval(function() {
+				live(watch, ctx)
+			}, 64)
+		}
+		cam()
+	</script>
+</body>
+</html>

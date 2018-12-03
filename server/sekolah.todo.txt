@@ -1,0 +1,25 @@
+6c09dc9af9a09e381e643a2316307d1f45aa2d80
+
+SCHEMA
+
+SCHEMATIC
+collection{
++ interfaces/schema/$name.schema.interface.ts
+• interfaces/schema/index.ts
++ database/schema/$name.schema.ts
+• database/schema/index.ts
++ app/models/$name.model.ts
+• app/models/index.ts
+}
+controller{
++ app/controllers/$name.controller.ts
+• app/controllers/index.ts
+}
+middleware{
++ app/http/middleware/$name.middleware.ts
+• app/http/middleware/index.ts
+}
+
+
+
+

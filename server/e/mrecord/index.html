@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LIVE</title>
+	<script type="text/javascript" src='/socket.io/socket.io.js'></script>
+</head>
+<body>
+	<div id="log"></div>
+	<div class="left">
+		<div id="startButton" class="button">
+			Start
+		</div>
+		<h2>Preview</h2>
+		<video id="preview" width="160" height="120" autoplay muted></video>
+	</div>
+	<div class="right">
+		<div id="stopButton" class="button">
+			Stop
+		</div>
+		<h2>Recording</h2>
+		<video id="recording" width="1200" height="600" controls></video>
+		<a id="downloadButton" class="button">
+			Download
+		</a>
+	</div>
+
+	<script type="text/javascript">
+		function _(id) {
+			return document.getElementById(id)
+		}
+		let preview = document.getElementById("preview");
+		let recording = document.getElementById("recording");
+		let startButton = document.getElementById("startButton");
+		let stopButton = document.getElementById("stopButton");
+		let downloadButton = document.getElementById("downloadButton");
+		let logElement = document.getElementById("log");
+
+		let recordingTimeMS = 5000;
+		function log(msg) {
+			logElement.innerHTML += msg + "\n";
+		}
+		function wait(delayInMS) {
+			return new Promise(resolve => setTimeout(resolve, delayInMS));
+		}
+		function startRecording(stream, lengthInMS) {
+			let recorder = new MediaRecorder(stream);
+			let data = [];
+
+			recorder.ondataavailable = event => data.push(event.data);
+			recorder.start();
+			log(recorder.state + " for " + (lengthInMS/1000) + " seconds...");
+
+			let stopped = new Promise((resolve, reject) => {
+				recorder.onstop = resolve;
+				recorder.onerror = event => reject(event.name);
+			});
+
+			let recorded = wait(lengthInMS).then(
+				() => recorder.state == "recording" && recorder.stop()
+				);
+
+			return Promise.all([
+				stopped,
+				recorded
+				])
+			.then(() => data);
+		}
+		function stop(stream) {
+			stream.getTracks().forEach(track => track.stop());
+		}
+		startButton.addEventListener("click", function() {
+			navigator.mediaDevices.getUserMedia({
+				video: true,
+				audio: true
+			}).then(stream => {
+				preview.srcObject = stream;
+				downloadButton.href = stream;
+				preview.captureStream = preview.captureStream || preview.mozCaptureStream;
+				return new Promise(resolve => preview.onplaying = resolve);
+			}).then(() => startRecording(preview.captureStream(), recordingTimeMS))
+			.then (recordedChunks => {
+				let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+				recording.src = URL.createObjectURL(recordedBlob);
+				downloadButton.href = recording.src;
+				downloadButton.download = "RecordedVideo.webm";
+
+				log("Successfully recorded " + recordedBlob.size + " bytes of " +
+					recordedBlob.type + " media.");
+			})
+			.catch(log);
+		}, false);
+		stopButton.addEventListener("click", function() {
+			stop(preview.srcObject);
+		}, false);
+		// if (navigator.mediaDevices) {
+		// 	console.log('getUserMedia supported.');
+		// 	var constraints = { audio: true };
+		// 	var chunks = [];
+		// 	navigator.mediaDevices.getUserMedia(constraints)
+		// 		.then(function(stream) {
+		// 			var mediaRecorder = new MediaRecorder(stream);
+		// 			visualize(stream);
+		// 			record.onclick = function() {
+		// 				mediaRecorder.start();
+		// 				console.log(mediaRecorder.state);
+		// 				console.log("recorder started");
+		// 				record.style.background = "red";
+		// 				record.style.color = "black";
+		// 			}
+		// 			stop.onclick = function() {
+		// 				mediaRecorder.stop();
+		// 				console.log(mediaRecorder.state);
+		// 				console.log("recorder stopped");
+		// 				record.style.background = "";
+		// 				record.style.color = "";
+		// 			}
+		// 			mediaRecorder.onstop = function(e) {
+		// 				console.log("data available after MediaRecorder.stop() called.");
+		// 				var clipName = prompt('Enter a name for your sound clip');
+		// 				var clipContainer = document.createElement('article');
+		// 				var clipLabel = document.createElement('p');
+		// 				var audio = document.createElement('audio');
+		// 				var deleteButton = document.createElement('button');
+		// 				clipContainer.classList.add('clip');
+		// 				audio.setAttribute('controls', '');
+		// 				deleteButton.innerHTML = "Delete";
+		// 				clipLabel.innerHTML = clipName;
+
+		// 				clipContainer.appendChild(audio);
+		// 				clipContainer.appendChild(clipLabel);
+		// 				clipContainer.appendChild(deleteButton);
+		// 				soundClips.appendChild(clipContainer);
+
+		// 				audio.controls = true;
+		// 				var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+		// 				chunks = [];
+		// 				var audioURL = URL.createObjectURL(blob);
+		// 				audio.src = audioURL;
+		// 				console.log("recorder stopped");
+
+		// 				deleteButton.onclick = function(e) {
+		// 					evtTgt = e.target;
+		// 					evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+		// 				}
+		// 			}
+		// 			mediaRecorder.ondataavailable = function(e) {
+		// 				chunks.push(e.data);
+		// 			}
+		// 		})
+		// 		.catch(function(err) {
+		// 			console.log('The following error occurred: ' + err);
+		// 		})
+		// }
+
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>io e</title>
+	<script type="text/javascript" src='/node_modules/socket.io-client/dist/socket.io.js'></script>
+</head>
+<body>
+	<script type="text/javascript">
+		console.log(io)
+		const server = io()
+		server.on('emit from server', () => {
+			console.log('emit from server')
+		})
+		const server_foo = io('https://sekolah.firebaseapp.com/foo')
+		const server_foo_bar = io('/foo/bar')
+		const server_foo_bar_baz = io('/foo/bar/baz')
+		console.log(server, server_foo, server_foo_bar, server_foo_bar_baz)
+	</script>
+</body>
+</html>

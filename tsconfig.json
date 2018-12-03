@@ -1,0 +1,59 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./",
+		"outDir": "./dist",
+		"sourceMap": false,
+		"declaration": false,
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"removeComments": true,
+		"target": "es5",
+		"typeRoots": ["./node_modules/@types"],
+		"lib": ["es2017", "dom"],
+		"paths": {
+			"@sekolah/app": ["server/app"],
+			"@sekolah/app/http": ["server/app/Http"],
+			"@sekolah/app/http/api": ["server/app/Http/Api"],
+			"@sekolah/app/http/controller": ["server/app/Http/Controller"],
+			"@sekolah/app/http/middleware": ["server/app/Http/Middleware"],
+			"@sekolah/app/models": ["server/app/Models"],
+			"@sekolah/app/models/mongodb": ["server/app/Models/mongodb"],
+			"@sekolah/app/models/mongodb/mongoose": [
+				"server/app/Models/mongodb/mongoose"
+			],
+			"@sekolah/app/models/mysql": ["server/app/Models/mysql"],
+			"@sekolah/app/models/mysql/sequelize": [
+				"server/app/Models/mysql/sequelize"
+			],
+			"@sekolah/app/websocket": ["server/app/WebSocket"],
+			"@sekolah/app/websocket/socket.io": [
+				"server/app/WebSocket/socket.io"
+			],
+			"@sekolah/bootstrap": ["server/bootstrap"],
+			"@sekolah/config": ["server/config"],
+			"@sekolah/db": ["server/db"],
+			"@sekolah/db/mongodb": ["server/db/mongodb"],
+			"@sekolah/db/mongodb/mongoose": ["server/db/mongodb/mongoose"],
+			"@sekolah/db/mongodb/mongoose/middleware": [
+				"server/db/mongodb/mongoose/middleware"
+			],
+			"@sekolah/db/mongodb/mongoose/schema": [
+				"server/db/mongodb/mongoose/schema"
+			],
+			"@sekolah/db/mysql": ["server/db/mysql"],
+			"@sekolah/db/mysql/sequelize": ["server/db/mysql/sequelize"],
+			"@sekolah/interfaces": ["server/interfaces"],
+			"@sekolah/interfaces/config": ["server/interfaces/config"],
+			"@sekolah/interfaces/schema": ["server/interfaces/schema"],
+			"@sekolah/lib": ["server/lib"],
+			"@sekolah/lib/net": ["server/lib/net"],
+			"@sekolah/lib/net/http": ["server/lib/net/http"],
+			"@sekolah/lib/net/http/response": ["server/lib/net/http/response"],
+			"@sekolah/resources": ["server/resources"],
+			"@sekolah/routes": ["server/routes"],
+			"@sekolah/test": ["server/test"]
+		}
+	}
+}
